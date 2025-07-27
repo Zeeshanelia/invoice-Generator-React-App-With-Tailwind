@@ -4,6 +4,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import 'remixicon/fonts/remixicon.css';
 import { NotFound } from './Compomemt/NotFound';
+import { SignUp } from './Compomemt/SignUp/SignUp'
+
 
 export default function App() {
   return (
@@ -15,6 +17,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/not-found" element={<NotFound />} />
           <Route path="/register" element={<Register />} />
+           <Route path="/signup" element={< SignUp />} />
           {/* <Route path="*" element={<div>404 Not Found</div>} /> */}
         </Routes>
       </BrowserRouter>

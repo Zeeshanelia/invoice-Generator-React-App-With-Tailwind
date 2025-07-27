@@ -18,7 +18,7 @@ export const Login = () => {
     const logIn = async (e) => {
         try {
             e.preventDefault();
-           
+            await signInWithEmailAndPassword(auth, formInputType.email, formInputType.password);
             navigate('/');
         } catch (error) {
             setErrors(error.message);
@@ -37,11 +37,12 @@ export const Login = () => {
 
     return (
     
-            <div className="grid grid-cols-1 md:grid-cols-2 md:h-screen md:overflow-hidden">
-                <img src="/img/Login2.jpg" className="w-full h-auto object-cover md:w-3/4 mx-auto md:ml-16" alt="Login Image" />
+            <div className="grid     md:grid-cols-2  md:overflow-hidden">
+                <img src="/img/Login2.jpg" className="w-full md:h-auto object-cover md:w-3/4 mx-auto " alt="Login Image" />
 
-                <div className="flex flex-col p-8 md:p-16 justify-center">
-                    <p className="text-gray-500 font-semibold text-lg md:text-xl mb-4">Now Log-In Here</p>
+
+                <div className="w-full flex flex-col  p-8 md:p-16  justify-center   ">
+                    <p className="text-gray-500 font-semibold text-lg md:text-xl   ">Now Log-In Here</p>
 
                     <form className="mt-8 space-y-2" onSubmit={logIn}>
                         <div className="flex flex-col">
@@ -77,13 +78,14 @@ export const Login = () => {
                             </button>
                         </div>
 
-                     
+                         <button
+                        type="submit"
+                        className="w-full py-3 px-8 rounded bg-purple-600 text-white font-semibold hover:bg-rose-600 transition duration-500 ease-in-out"
+                    >
+                        Login
+                    </button>
 
-                        <button
-                            type="submit"
-                            className="w-full py-3 px-8 rounded bg-purple-600 text-white font-semibold hover:bg-rose-600 transition duration-500 ease-in-out ">
-                            Login
-                        </button>
+                       
                     </form>
 
                     <span className="mt-2 text-center md:text-left">
@@ -105,6 +107,7 @@ export const Login = () => {
             </div>
     );
 };
+
 
 
 
