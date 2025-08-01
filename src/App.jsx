@@ -5,20 +5,22 @@ import './App.css';
 import 'remixicon/fonts/remixicon.css';
 import { NotFound } from './Compomemt/NotFound';
 import { SignUp } from './Compomemt/SignUp/SignUp'
-
+import { Dashboard } from './Compomemt/dashboard/Dashboard';
 
 export default function App() {
   return (
     <>
-      <h1>Invoice Generator</h1>
+    
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/login" />} /> // Redirect root to login
+          {/* Redirect root to login dashboard*/}
+          <Route path="/" element={<Navigate to="/dashboard"/>}/> 
+
           <Route path="/login" element={<Login />} />
-          <Route path="/not-found" element={<NotFound />} />
-          <Route path="/register" element={<Register />} />
-           <Route path="/signup" element={< SignUp />} />
-          {/* <Route path="*" element={<div>404 Not Found</div>} /> */}
+          <Route path="/not-found" element={ <NotFound/>  } />
+          <Route path="/signup" element={    < SignUp/>     }  />
+          <Route path="/dashboard" element={ <Dashboard />} />
+          <Route path="*" element={<div>404 Not Found</div>} />
         </Routes>
       </BrowserRouter>
     </>

@@ -4,7 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { updateProfile } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../firebase"; // Adjust the import path as necessary
+import { auth  ,db } from "../../firebase";
+import { setDoc , doc } from "firebase/firestore";
 
 
 export const SignUp = () => {
@@ -28,11 +29,11 @@ export const SignUp = () => {
 
 
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, signUp.email, signUp.password);//Create user with email and password
+            const  userCredential = await createUserWithEmailAndPassword(auth, signUp.email, signUp.password);//Create user with email and password
 
             updateProfile(auth.currentUser, { displayName: signUp.fullname }) // Update user profile with full name
                 .then(() => {
-                    console.log("Profile updated successfully");
+                    console.log("Update user profile with SignUp successfully");
                 })
                 .catch((error) => {
                     console.error("Error updating profile:", error);
@@ -41,9 +42,35 @@ export const SignUp = () => {
             // Redirect to home page or dashboard after successful signup
             console.log("User signed up successfully:", userCredential.user);
 
+
+
             if (userCredential.user) {
-                navigate('/'); // Redirect to home page
+                navigate('/dashboard'); // Redirect to dashboard
             }
+
+            
+
+            localStorage.setItem("user", JSON.stringify({
+             uid: auth.currentUser.uid,
+             fullname: signUp.fullname,
+             email: signUp.email,
+            })); // Store user data in localStorage
+
+
+            
+                setDoc( //Assuming you have Firestore instance and a 'users' collection
+                doc(db, "users", auth.currentUser.uid),
+                {
+                    fullname: signUp.fullname,
+                    email: signUp.email,
+                    password: signUp.password,
+                },
+                // { merge: true } // Merge to avoid overwriting existing data
+            );
+            
+
+
+
         } catch (err) {
             // Handle specific Firebase errors
             switch (err.code) {
@@ -56,22 +83,22 @@ export const SignUp = () => {
                 case 'auth/weak-password':
                     setError('Password should be at least 6 characters.');
                     break;
-                default:
-                    setError('Failed to create account. Please try again.');
+                // default:
+                //     setError('Failed to create account. Please try again.');
             }
 
         } finally {
             setLoader(false); // Stop loading
         }
 
-        
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    updateProfile(user, {
-                        displayName: signUp.fullname
-                    });
-                }
-            });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                updateProfile(user, {
+                    displayName: signUp.fullname
+                });
+            }
+        });
     };
 
     const handleChange = (e) => {
@@ -153,12 +180,12 @@ export const SignUp = () => {
                             value={signUp.password}
                             placeholder="********"
                             autoComplete="current-password"
-                            className="p-2 border border-gray-300 w-[40vw] rounded"
+                            className="p-2 border border-gray-300 md:w-[40vw] rounded"
                         />
                         <button
                             type="button"
                             onClick={() => setPasswordType(prev => prev === "password" ? "text" : "password")}
-                            className="absolute bottom-2 right-4 md:right-8 text-xl text-gray-600"
+                            className="absolute bottom-2 right-4 md:right-8   rounded-full w-6 hover:bg-blue-200 hover:text-blue-900"
                         >
                             {passwordType === "password" ? <i className="ri-eye-line"></i> : <i className="ri-eye-off-line"></i>}
                         </button>
