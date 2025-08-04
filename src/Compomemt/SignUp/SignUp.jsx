@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { updateProfile } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth  ,db } from "../../firebase";
-import { setDoc , doc } from "firebase/firestore";
+import { auth, db } from "../../firebase";
+import { setDoc, doc } from "firebase/firestore";
 
 
 export const SignUp = () => {
@@ -19,8 +19,18 @@ export const SignUp = () => {
     const [signUp, setSignUp] = useState({
         fullname: "",
         email: "",
-        password: ""
+        password: "",
+        photo: null // holds the file object,
     });
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+            reader.readAsDataURL(file);
+        });
+    };
 
     const handleSignUp = async (e) => {
         e.preventDefault();
@@ -29,7 +39,9 @@ export const SignUp = () => {
 
 
         try {
-            const  userCredential = await createUserWithEmailAndPassword(auth, signUp.email, signUp.password);//Create user with email and password
+            const userCredential = await createUserWithEmailAndPassword(auth, signUp.email, signUp.password);//Create user with email and password
+
+            const photoBase64 = signUp.photo ? await convertToBase64(signUp.photo) : null
 
             updateProfile(auth.currentUser, { displayName: signUp.fullname }) // Update user profile with full name
                 .then(() => {
@@ -40,7 +52,7 @@ export const SignUp = () => {
                 });
 
             // Redirect to home page or dashboard after successful signup
-            console.log("User signed up successfully:", userCredential.user);
+            // console.log("User signed up successfully:", userCredential.user);
 
 
 
@@ -48,26 +60,30 @@ export const SignUp = () => {
                 navigate('/dashboard'); // Redirect to dashboard
             }
 
-            
-
-            localStorage.setItem("user", JSON.stringify({
-             uid: auth.currentUser.uid,
-             fullname: signUp.fullname,
-             email: signUp.email,
-            })); // Store user data in localStorage
 
 
-            
-                setDoc( //Assuming you have Firestore instance and a 'users' collection
-                doc(db, "users", auth.currentUser.uid),
+            localStorage.setItem(
+                "CompanyN",
+                JSON.stringify({
+                    uid: auth.currentUser.uid,
+                    fullname: signUp.fullname,
+                    email: signUp.email,
+                    photo: photoBase64,
+                })); // Store user data in localStorage
+
+
+
+            setDoc( //Assuming you have Firestore instance and a 'CompanyN' collection
+                doc(db, "CompanyN", auth.currentUser.uid),
                 {
                     fullname: signUp.fullname,
                     email: signUp.email,
                     password: signUp.password,
+                    photo: photoBase64, // optional: store in Firestore too     
                 },
                 // { merge: true } // Merge to avoid overwriting existing data
             );
-            
+
 
 
 
@@ -152,7 +168,16 @@ export const SignUp = () => {
                         <input
                             ref={fileInputRef}
                             type="file"
-                            name="file"
+                            id="file"
+                            className="p-2 border border-gray-300 rounded"
+                            accept="image/*"
+                            name="photo"
+                            onChange={(e) =>
+                                setSignUp((prev) => ({
+                                    ...prev,
+                                    photo: e.target.files[0],
+                                }))
+                            }
                         />
                     </div>
 
@@ -217,6 +242,36 @@ export const SignUp = () => {
 
     );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
