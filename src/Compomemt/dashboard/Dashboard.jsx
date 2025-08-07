@@ -31,7 +31,7 @@ export const Dashboard = () => {
 
 
 
-                <div className="flex items-center justify-between bg-yellow-50 shadow-md p-4">
+                <div className="flex items-center justify-between bg-yellow-100 shadow-md p-4">
                     <h1 className="text-xl font-bold">Dashboard Header</h1>
                     <div className="flex items-center space-x-12">
 
@@ -56,7 +56,7 @@ export const Dashboard = () => {
                     </div>
                 </div>
 
-                <main className="ml-[270px] p-8">
+                <main className="ml-[220px] p-4">
                     {/* <h1 className="text-2xl font-bold mb-4"></h1> */}
                  
                 <div className=" "> <Outlet /> </div>
