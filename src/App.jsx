@@ -16,11 +16,12 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           {/* Redirect root to login dashboard*/}
-          <Route path="/" element={<Navigate to="/dashboard"/>}/> 
           <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Navigate to="/Login "/>}/> 
           <Route path="/not-found" element={ <NotFound/>  } />
           <Route path="/signup" element={    < SignUp/>     }  />
           
+
           {/* Dashboard and its nested routes */}
           <Route path="/dashboard" element={<Dashboard />} >
             <Route path="home" element={<Home />} />

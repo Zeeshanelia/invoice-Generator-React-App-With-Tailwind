@@ -28,3 +28,39 @@ UI Enhancements ideas:
 Validation Feedback: Show inline validation or toast messages near the button.
 Loading State: Add a spinner or "Submitting..." text when clicked.
 Disabled State: Disable the button until all required fields are filled.
+
+
+
+
+
+  const addProduct = () => {
+    // if (to === "" || product === "" || phone === "" || address === "" || price === "" || quantity === "") {
+    //   alert("Please fill all the fields");
+    //   return;
+    // }
+    
+    const newProduct = {
+      id: product,
+      name: product,
+      price: price,
+      quantity: quantity
+    };
+    setProDetails((prevDetails) => [...prevDetails, newProduct]);
+
+    const newTotal = (
+      [...proDetails, newProduct].reduce((acc, item) => {
+        return acc + Number(item.price) * Number(item.quantity);
+      }, 0)
+    ).toFixed(2);
+
+    setTotal(`${newTotal}`);
+
+    // Reset form fields
+    setTo("");
+    setProduct("");
+    setPhone("");
+    setAddress("");
+    setPrice("");
+    setQuantity("");
+    // console.log("Product added to invoice list");
+  };

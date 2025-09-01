@@ -4,11 +4,8 @@ export const InvoicesRecord = () => {
 
 
 
-    
-    return ( <>
-   
 
-
-
-
-       </>)}
+    return (<>
+        <h2>InvoicesRecord</h2>
+    </>)
+}
