@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { db } from "../../firebase";
 import { addDoc, collection, Timestamp  } from "firebase/firestore";
 
@@ -7,7 +7,7 @@ export const NewInvoice = () => {
   const [product, setProduct] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [price, setPrice] = useState("");
+  const [price , setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [total, setTotal] = useState('');
   const [proDetails, setProDetails] = useState([])
@@ -15,19 +15,16 @@ export const NewInvoice = () => {
 
 
   const savingData = async () => {
-  console.log({ to, phone, address });
-  console.log({ proDetails });
-  console.log({ total });
-
+  console.log({ to, phone, address , proDetails ,total });
+  
   try {
     const colRef = collection(db, 'invoices'); 
     // collection(firestoreInstance, collectionPath)  Only 2 arguments
     const docRef = await addDoc(colRef, {
-      to,
-      product,
-      price,
-      address,
-      total,
+      to: to,
+     products: proDetails, //  Save full product lis
+     address:  address,
+     total : total,
       date: Timestamp.fromDate(new Date())
     });
 
@@ -94,7 +91,7 @@ const handleSubmit = (e) => {
   return (<>
     <div 
     className="flex justify-between  mr-22 ">
-      <h1 className="text-2xl mt-2 ml-14 font-bold">New Invoice</h1>
+      <h1 className="md:text-2xl mt-2 ml-14 font-bold">New Invoice</h1>
 
 
       <button onClick={savingData}
@@ -167,11 +164,11 @@ const handleSubmit = (e) => {
     </form>
 
 
-<div>
-  <h2 className="text-xl font-semibold mt-6">Invoice Details</h2>
+<div className="md:ml-14 md:w-[900px]">
+  <h2 className="text-xl font-semibold mt-6 ">Invoice Details</h2>
 
   {/* Table Headers */}
-  <div className="hidden md:grid md:grid-cols-5 font-semibold bg-slate-100 shadow-md py-2 text-center">
+  <div className="hidden md:grid md:grid-cols-5 font-semibold bg-slate-100 shadow-md md:py-2 text-center md:space-x-2">
     <p>Serial No</p>
     <p>Product Name</p>
     <p>Price</p>
@@ -180,11 +177,11 @@ const handleSubmit = (e) => {
   </div>
 
   {/* Table Body */}
-  <div className="mt-2 space-y-4">
+  <div className="mt-2 ">
     {proDetails.map((detail, index) => (
       <div
         key={index}
-        className="grid grid-cols-1 md:grid-cols-5 md:text-center bg-white p-3 shadow-sm rounded-md"
+        className="grid grid-cols-5 md:text-center bg-white md:p-3 shadow-lg border-b rounded-md"
       >
         {/* Mobile Labels */}
         <div className="md:hidden">
@@ -221,11 +218,11 @@ const handleSubmit = (e) => {
   </div>
 
 
-        { proDetails.length === 0 && <p className="col-span-5">No invoice details available.</p>}
+        { proDetails.length === 0 && <p className="col-span-5 border-b">No invoice details available.</p>}
       </div>
       
-                   <hr />
-      <div className="flex justify-end mt-4 md:mt-8 md:mr-[5rem]">
+                  
+      <div className="flex justify-end mt-4 md:mt-12 md:mr-[5rem]">
         <p className="text-xl font-semibold text-pink-500 ">Total : {total}</p>
       </div>
     

@@ -127,10 +127,10 @@ export const SignUp = () => {
 
     return (
 
-        <div className="grid  md:grid-cols-2  justify-center items-center   ">
-            <img src="/img/signup.webp" className="w-full mt-0 md:h-[398px]  max-w-md mx-auto " alt="Sign Up" />
+        <div className="grid  md:grid-cols-2 gap-2 justify-center items-center   ">
+            <img src="/img/signup.webp" className="w-full mt-0 md:h-[428px]  max-w-md mx-auto " alt="Sign Up" />
 
-            <div className="flex flex-col  sm:items-center">
+            <div className="flex flex-col  sm:items-center mt-10">
                 <h1 className="font-bold text-2xl md:text-2xl">New User</h1>
                 <p className="text-gray-400 text-center md:text-left">Create Id To Start your Invoice Generator</p>
 
@@ -226,7 +226,7 @@ export const SignUp = () => {
                 </form>
 
                 <span className="mt-4 ">
-                    Already have an account?{' '}
+                    Already have an account ? {' '}
                     <Link to="/login" className="text-blue-500 hover:text-blue-600">
                         Login
                     </Link>

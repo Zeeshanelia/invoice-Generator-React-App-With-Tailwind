@@ -102,7 +102,7 @@ export const Login = () => {
                 </form>
 
                 <span className="mt-2 text-center md:text-left">
-                    Don't have an account ?
+                    Don't have an account ? {' '}
                     <span>
                         <Link to="/signup" className="text-blue-400 hover:text-blue-500 space-x-1">
                             Register Now
