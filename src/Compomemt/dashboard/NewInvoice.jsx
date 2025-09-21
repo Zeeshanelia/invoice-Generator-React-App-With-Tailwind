@@ -1,6 +1,8 @@
 import  { useState } from "react";
 import { db } from "../../firebase";
 import { addDoc, collection, Timestamp  } from "firebase/firestore";
+import {  useNavigate } from "react-router-dom";
+
 
 export const NewInvoice = () => {
   const [to, setTo] = useState("");
@@ -13,7 +15,7 @@ export const NewInvoice = () => {
   const [proDetails, setProDetails] = useState([])
 
 
-
+   const navigate = useNavigate() 
   const savingData = async () => {
   console.log({ to, phone, address , proDetails ,total });
   
@@ -32,10 +34,10 @@ export const NewInvoice = () => {
   } catch (error) {
     console.error("Error adding document: ", error);
   }
+  navigate('/dashboard/invoices')
 };
 
-
-
+  
 
 
   const addProduct = () => {
@@ -63,9 +65,9 @@ export const NewInvoice = () => {
 
   const newTotal = updatedList.reduce((acc, item) => {
     return acc + Number(item.price) * Number(item.quantity);
-  }, 0).toFixed(2);
-
-  setTotal(newTotal);
+  }, 0).toFixed(1);
+  setTotal(newTotal
+  );
 
   return true; // Product added successfully
 };

@@ -14,8 +14,6 @@ export const SignUp = () => {
     const [error, setError] = useState(null);
     const [loader, setLoader] = useState(false);
     const fileInputRef = useRef(null) // Reference for file input
-
-
     const [signUp, setSignUp] = useState({
         fullname: "",
         email: "",
@@ -51,11 +49,12 @@ export const SignUp = () => {
                     console.error("Error updating profile:", error);
                 });
 
+
+
+
             // Redirect to home page or dashboard after successful signup
             // console.log("User signed up successfully:", userCredential.user);
-
-
-
+ 
             if (userCredential.user) {
                 navigate('/dashboard'); // Redirect to dashboard
             }

@@ -43,16 +43,16 @@ export const Dashboard = () => {
 
             {/* Navigation Links */}
             <div className="flex flex-col space-y-4 mt-2">
-              <Link to="home" className="text-white hover:text-blue-900 hover:bg-green-200 ">
+              <Link to="home" className="text-white hover:text-blue-900 hover:bg-green-200 rounded">
                 Home
               </Link>
-              <Link to="new-invoice" className="text-white hover:text-blue-900 hover:bg-green-200 ">
+              <Link to="new-invoice" className="text-white hover:text-blue-900 hover:bg-green-200 rounded">
                 New Invoice
               </Link>
-              <Link to="invoices" className="text-white hover:text-blue-900 hover:bg-green-200 ">
+              <Link to="invoices" className="text-white hover:text-blue-900 hover:bg-green-200 rounded">
                 Invoices Record
               </Link>
-              <Link to="settings" className="text-white hover:text-blue-900 hover:bg-green-200 ">
+              <Link to="settings" className="text-white hover:text-blue-900 hover:bg-green-200 rounded">
                 Settings
               </Link>
             </div>
@@ -72,8 +72,10 @@ export const Dashboard = () => {
       <main
         className={`transition-all duration-300 ml-[${size}px]  p-4`}
         style={{ marginLeft: size }}>
+
         <Outlet />
       </main>
+    
     </div>
   );
 };

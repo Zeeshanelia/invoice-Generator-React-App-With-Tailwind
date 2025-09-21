@@ -9,6 +9,7 @@ import { Home } from './Compomemt/dashboard/Home';
 import { InvoicesRecord } from './Compomemt/dashboard/InvoicesRecord';
 import { NewInvoice } from './Compomemt/dashboard/NewInvoice';
 import { Settings } from './Compomemt/dashboard/Settings';
+import {InvoiceDetail } from './Compomemt/dashboard/InvoiceDetail'
 
 export default function App() {
   return ( <>
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="new-invoice" element={<NewInvoice />} />
             <Route path="invoices" element={<InvoicesRecord />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="Invoice-detail" element={<InvoiceDetail />} />
           </Route>
           {/* Redirect any unmatched routes to NotFound */}
           <Route path="*" element={<NotFound/>} />
