@@ -15,10 +15,10 @@ export const Login = () => {
 
     const logIn = async (e) => {
         e.preventDefault(); // prevent default first
-
         try {
             await signInWithEmailAndPassword(auth, formInputType.email, formInputType.password);
-            console.log("Login successfully");
+            // console.log("Login successfully");
+            
             navigate('/dashboard'); // Navigate to dashboard on successful login
         } catch (error) {
             if (error.code === 'auth/network-request-failed') {

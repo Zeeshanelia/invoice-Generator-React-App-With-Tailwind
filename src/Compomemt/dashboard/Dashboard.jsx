@@ -1,8 +1,17 @@
-import { Link, Outlet } from 'react-router-dom';
-import { useState } from "react";
+
+
+
+
+
+ import { Link, Outlet } from 'react-router-dom';
+ import { useState, useEffect } from "react";
+import { supabase } from '../../supabaseClient';
+
 
 export const Dashboard = () => {
   const [size, setSize] = useState(170); // Sidebar width
+  const [imgUrl, setImgUrl] = useState('');
+
 
   const companyData = JSON.parse(localStorage.getItem("CompanyN") || "{}");
 
@@ -10,36 +19,57 @@ export const Dashboard = () => {
     setSize(size === 170 ? 0 : 170);
   };
 
+  const getImageUrl = async () => {
+    try {
+      const { data, error } = supabase
+        .storage
+        .from('profile-images')
+        .getPublicUrl('profile/qwerty_1758625950767.jpg');
+
+      if (error) {
+        console.error('Error getting public URL:', error.message);
+        return;
+      }
+
+      console.log('Image URL:', data.publicUrl); // Check if this prints correctly
+      setImgUrl(data.publicUrl);     } catch (err) {
+      console.error("Error fetching image URL:", err.message);
+    }
+  };
+
+  useEffect(() => {
+    getImageUrl();
+
+  }, []);
   return (
     <div className=" ">
-      {/*/////////////// Sidebar //////////*/}
+//       {/*/////////////// Sidebar //////////*/}
       <aside
         className="flex flex-col items-center fixed top-0 left-0 h-full bg-black  shadow-lg rounded-md py-4 transition-all duration-300 z-40"
         style={{ width: size }}
       >
 
-            {  /*///////////   Toggle Button ///////////// */}
+//         {  /*///////////   Toggle Button ///////////// */}
 
-        <nav className={`w-full flex justify-end mt-2 ml-[6rem]`}>
+        <nav className={` flex justify-end  ml-[4rem]`}>
           <button onClick={toggleSidebar}>
-            <i className="text-xl ri-menu-unfold-2-line  border"></i>
+            <i className="text-xl text-amber-400 ri-menu-unfold-2-line  border"></i>
           </button>
         </nav>
 
-                 {/* Sidebar Content */}
+        {/* Sidebar Content */}
         {size > 0 && (
           <>
-            <img
-              src={companyData.profilePicture || "/img/default-profile.png"}
-              alt="Profile"
-              className="w-24 h-24 object-cover  rounded-full border-2 border-white shadow-md"
-            />
+
+            {imgUrl && <img className="w-24 h-24 object-cover mt-4 rounded-full border-2 border-white shadow-md" src={imgUrl} alt="Uploaded"  />}
+            
+
             <h5 className="text-2xl text-white text-center mt-2">
               {companyData.companyName || "No Company"}
             </h5>
             <p className="text-white text-sm mb-4">{companyData.email || "No Email"}</p>
 
-            
+
 
             {/* Navigation Links */}
             <div className="flex flex-col space-y-4 mt-2">
@@ -64,18 +94,20 @@ export const Dashboard = () => {
                 localStorage.removeItem("CompanyN");
                 window.location.reload();
               }}>  LogOut </button>
+ {/* Logout Button */}
+            
           </>
         )}
       </aside>
 
       {/* Main Content */}
       <main
-        className={`transition-all duration-300 ml-[${size}px]  p-4`}
+        className={`transition-all duration-300 ml-[${size}px]`}
         style={{ marginLeft: size }}>
 
         <Outlet />
       </main>
-    
+
     </div>
   );
 };
