@@ -10,10 +10,6 @@ export const InvoicesRecord = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-
-   
-
-
     const getData = useCallback(async () => {
         try {
             setLoading(true);
@@ -22,6 +18,7 @@ export const InvoicesRecord = () => {
                 id: doc.id,
                 ...doc.data(),
             }));
+            console.log(data , "get id detail")
             setInvoices(data);
             setLoading(false);
         } catch (err) {
@@ -45,11 +42,13 @@ export const InvoicesRecord = () => {
         getData();
     }, [getData]);
 
-    return (
-        <div className="mt-4 ml-12">
-            <h2 className="md:text-2xl md:ml-2 font-bold">Invoices Record</h2>
 
-           
+
+
+    
+    return (
+        <div className="md:mt-4 md:ml-12">
+            <h2 className="md:text-2xl md:ml-2 font-bold">Invoices Record</h2>
 
             {loading && <p>Loading invoices...</p>}
             {error && <p className="text-red-500">{error}</p>}
@@ -57,7 +56,7 @@ export const InvoicesRecord = () => {
 
             {invoices.map(data => (
                 <div
-                    className="md:flex text-center m-4 p-2 bg-green-200 md:gap-4 items-center justify-between shadow-lg rounded"
+                    className="md:flex md:text-center md:m-4 p-2 bg-green-200 md:gap-4 md:items-center justify-between shadow-lg rounded"
                     key={data.id}
                 >
                     <p>{data.to}</p>

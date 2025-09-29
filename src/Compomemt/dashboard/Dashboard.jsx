@@ -1,16 +1,10 @@
-// Importing React and its hooks useState, useEffect, useRef
+
 import React, { useState, useEffect, useRef } from "react"; 
-
-// Importing NavLink for navigation and Outlet to render child routes
 import { NavLink, Outlet } from "react-router-dom";
-
 // Importing supabase client to interact with Supabase storage
 import { supabase } from "../../supabaseClient";
-
-// Define the Dashboard component
 export const Dashboard = () => {
   // State to track if sidebar is open or closed
-  // Initializes based on value in localStorage
   const [isOpen, setIsOpen] = useState(() => {
     return localStorage.getItem("sidebar") === "closed" ? false : true;
   });
@@ -18,245 +12,216 @@ export const Dashboard = () => {
   // State to store company data, initializing from localStorage
   const [companyData, setCompanyData] = useState(() => {
     try {
-      // Parse JSON from localStorage or default to empty object
       return JSON.parse(localStorage.getItem("CompanyN") || "{}");
     } catch {
       return {};
     }
   });
 
-  // State to store the image URL for company profile picture
   const [imgUrl, setImgUrl] = useState("");
-
-  // Ref to store object URL to revoke later
   const objectUrlRef = useRef(null);
 
-  // Supabase storage bucket and folder
   const BUCKET = "profile-images";
   const FOLDER = "profile";
 
-  // Function to toggle sidebar open/close
   const toggleSidebar = () => {
-    const next = !isOpen; // Toggle the boolean value
-    setIsOpen(next); // Update state
-    // Save current sidebar state in localStorage
+    const next = !isOpen;
+    setIsOpen(next);
     localStorage.setItem("sidebar", next ? "open" : "closed");
   };
 
-  // Effect to prevent body scroll on mobile when sidebar is open
   useEffect(() => {
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
     if (isMobile && isOpen) {
-      document.body.style.overflow = "hidden"; // Disable scroll
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = ""; // Enable scroll
+      document.body.style.overflow = "";
     }
-    // Cleanup function to reset scroll on unmount
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isOpen]); // Run effect whenever sidebar state changes
+  }, [isOpen]);
 
-  // Function to revoke object URL to prevent memory leaks
   const revokeObjectUrl = () => {
     if (objectUrlRef.current) {
-      URL.revokeObjectURL(objectUrlRef.current); // Revoke URL
-      objectUrlRef.current = null; // Reset ref
+      URL.revokeObjectURL(objectUrlRef.current);
+      objectUrlRef.current = null;
     }
   };
 
-  // Effect to load company image from Supabase if it exists
   useEffect(() => {
-    const imagePath = companyData?.image; // Get image path from company data
+    const imagePath = companyData?.image;
     if (!imagePath) {
-      revokeObjectUrl(); // Remove old object URL
-      setImgUrl(""); // Reset image state
+      revokeObjectUrl();
+      setImgUrl("");
       return;
     }
 
-    let isMounted = true; // To prevent state update on unmounted component
-
+    let isMounted = true;
     const load = async () => {
       try {
-        // Get public URL of image from Supabase storage
         const { data } = supabase.storage.from(BUCKET).getPublicUrl(imagePath);
-        if (isMounted) setImgUrl(data?.publicUrl ?? ""); // Set image URL if component mounted
+        if (isMounted) setImgUrl(data?.publicUrl ?? "");
       } catch {
-        setImgUrl(""); // If error, reset image URL
+        setImgUrl("");
       }
     };
-    load(); // Call async function
+    load();
 
     return () => {
-      isMounted = false; // Cleanup to prevent memory leak
+      isMounted = false;
     };
-  }, [companyData?.image]); // Run effect whenever company image path changes
+  }, [companyData?.image]);
 
-  // Handle file input change for uploading new profile image
   const handleFileChange = async (e) => {
-    const file = e.target.files?.[0]; // Get selected file
-    if (!file) return; // Exit if no file selected
-    const userId = companyData?.id ?? "guest"; // Use company id or guest
-    const filename = `${userId}_${Date.now()}_${file.name}`; // Create unique filename
-    const path = `${FOLDER}/${filename}`; // Full path in storage
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const userId = companyData?.id ?? "guest";
+    const filename = `${userId}_${Date.now()}_${file.name}`;
+    const path = `${FOLDER}/${filename}`;
 
-    // Upload file to Supabase storage
     const { error } = await supabase.storage.from(BUCKET).upload(path, file);
 
     if (!error) {
-      // Update company data with new image path
       const updated = { ...companyData, image: path };
-      localStorage.setItem("CompanyN", JSON.stringify(updated)); // Save in localStorage
-      setCompanyData(updated); // Update state
+      localStorage.setItem("CompanyN", JSON.stringify(updated));
+      setCompanyData(updated);
 
-      // Get public URL and update imgUrl state
       const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
       setImgUrl(data?.publicUrl ?? "");
     }
   };
 
-  // Function to get initials from company name for placeholder avatar
   const initials = (name) =>
     name
       ? name
-          .split(" ") // Split name by spaces
-          .map((n) => n[0]) // Take first letter of each word
-          .slice(0, 2) // Take maximum 2 initials
-          .join("") // Join as string
-          .toUpperCase() // Uppercase letters
-      : "??"; // Default if no name
+          .split(" ")
+          .map((n) => n[0])
+          .slice(0, 2)
+          .join("")
+          .toUpperCase()
+      : "??";
 
-  // Function to logout user
   const logout = () => {
-    revokeObjectUrl(); // Revoke any object URL
-    localStorage.removeItem("CompanyN"); // Remove company data from localStorage
-    window.location.reload(); // Reload page
+    revokeObjectUrl();
+    localStorage.removeItem("CompanyN");
+    window.location.reload();
   };
 
-  // JSX for rendering dashboard
+
+  
   return (
+
+
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside
-        className={`
-          fixed lg:relative top-0 left-0 h-full z-50 bg-black text-white shadow-lg mr-[-10rem]
-          transition-all duration-300 ease-in-out flex flex-col h-screen
-          ${isOpen ? "translate-x-0 w-64" : "-translate-x-full"}
-          lg:translate-x-0 ${isOpen ? "lg:w-[180px]" : "lg:w-[60px]"}
-        `}
-      >
-        {/* Close button - only visible on mobile */}
-        <div className="flex justify-end p-3 border-b border-gray-800 lg:hidden">
-          <button
-            onClick={toggleSidebar}
-            aria-label="Close sidebar"
-            className="hover:scale-110 transition-transform"
-          >
-            <i className="ri-close-line text-2xl text-amber-400"></i>
-          </button>
-        </div>
-
-        {/* Profile section */}
-        <div className="flex flex-col items-center mt-6 space-y-2">
-          {imgUrl ? (
-            // If image exists, show image
-            <img
-              className="w-16 h-16 lg:w-20 lg:h-20 rounded-full border-2 border-white shadow-md object-cover"
-              src={imgUrl}
-              alt="Uploaded"
-            />
-          ) : (
-            // Else show placeholder with initials
-            <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full border-2 border-white flex items-center justify-center bg-slate-600 text-lg lg:text-xl">
-              {initials(companyData?.companyName)}
-            </div>
-          )}
-
-          {isOpen && (
-            <>
-              {/* Upload button */}
-              <label
-                htmlFor="fileInput"
-                className="cursor-pointer bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
-              >
-                Upload
-              </label>
-              <input
-                id="fileInput"
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange} // Call upload function
-                className="hidden"
-              />
-
-              {/* Company name and email */}
-              <h5 className="text-base lg:text-lg mt-1 text-center truncate w-40">
-                {companyData?.companyName || "No Company"}
-              </h5>
-              <p className="text-xs lg:text-sm text-center truncate w-40">
-                {companyData?.email || "No Email"}
-              </p>
-            </>
-          )}
-        </div>
-
-        {/* Navigation links */}
-        <nav className="flex flex-col space-y-2 mt-6 px-2 lg:px-3">
-          {[
-            { to: "home", icon: "ri-home-line", label: "Home" },
-            { to: "new-invoice", icon: "ri-file-add-line", label: "New Invoice" },
-            { to: "invoices", icon: "ri-file-list-3-line", label: "Invoices Record" },
-            { to: "settings", icon: "ri-settings-3-line", label: "Settings" },
-          ].map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `group relative flex items-center gap-3 px-2 py-2 rounded transition 
-                 ${isActive ? "bg-green-400 text-black" : "hover:bg-green-200 hover:text-black"}`
-              }
+      {isOpen && (
+        <aside
+          className={`
+            fixed top-0 left-0 h-full z-50 bg-black text-white shadow-lg
+            transition-all duration-300 ease-in-out flex flex-col w-64
+          `}
+        >
+          {/* Close button */}
+          <div className="flex justify-end p-3 border-b border-gray-800">
+            <button
+              onClick={toggleSidebar}
+              aria-label="Close sidebar"
+              className="hover:scale-110 transition-transform"
             >
-              <i className={item.icon}></i>
-              {isOpen && <span>{item.label}</span>}
-              {!isOpen && (
-                <span className="absolute left-12 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">
-                  {item.label}
-                </span>
-              )}
-            </NavLink>
-          ))}
-        </nav>
+              <i className="ri-close-line text-2xl text-amber-400"></i>
+            </button>
+          </div>
 
-        {/* Logout button */}
-        <div className="mt-auto px-2 lg:px-3 pb-6">
-          <button
-            onClick={logout}
-            className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 py-2 rounded transition"
-          >
-            <i className="ri-logout-box-r-line"></i>
-            {isOpen && <span>Logout</span>}
-          </button>
-        </div>
-      </aside>
+          {/* Profile section */}
+          <div className="flex flex-col items-center mt-6 space-y-2">
+            {imgUrl ? (
+              <img
+                className="w-16 h-16 lg:w-28 lg:h-28 rounded-full border-2 border-white shadow-md object-cover"
+                src={imgUrl}
+                alt="Uploaded"
+              />
+            ) : (
+              <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full border-2 border-white flex items-center justify-center bg-slate-600 text-lg lg:text-xl">
+                {initials(companyData?.companyName)}
+              </div>
+            )}
 
-      {/* Overlay for mobile when sidebar is open */}
-      <div
-        className={`fixed inset-0 bg-black transition-opacity duration-300 ${
-          isOpen ? "bg-opacity-50 visible" : "bg-opacity-0 invisible"
-        } lg:hidden`}
-        onClick={toggleSidebar} // Close sidebar when clicked
-      />
+            <label
+              htmlFor="fileInput"
+              className="cursor-pointer bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+            >
+              Upload
+            </label>
+            <input
+              id="fileInput"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+
+            <h5 className="text-base lg:text-lg mt-1 text-center truncate w-40">
+              {companyData?.companyName || "No Company"}
+            </h5>
+            <p className="text-xs lg:text-sm text-center truncate w-40">
+              {companyData?.email || "No Email"}
+            </p>
+          </div>
+
+          {/* Navigation links */}
+          <nav className="flex flex-col space-y-2 mt-6 px-2 lg:px-3">
+            {[
+              { to: "home", icon: "ri-home-line", label: "Home" },
+              { to: "new-invoice", icon: "ri-file-add-line", label: "New Invoice" },
+              { to: "invoices", icon: "ri-file-list-3-line", label: "Invoices Record" },
+              { to: "settings", icon: "ri-settings-3-line", label: "Settings" },
+            ].map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `group relative flex items-center gap-3 px-2 py-2 rounded transition 
+                   ${isActive ? "bg-green-400 text-black" : "hover:bg-green-200 hover:text-black"}`
+                }
+              >
+                <i className={item.icon}></i>
+                <span>{item.label}</span>
+              </NavLink>
+            ))}
+          </nav>
+
+          {/* Logout button */}
+          <div className="mt-auto px-2 lg:px-3 pb-6">
+            <button
+              onClick={logout}
+              className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 py-2 rounded transition"
+            >
+              <i className="ri-logout-box-r-line"></i>
+              <span>Logout</span>
+            </button>
+          </div>
+        </aside>
+      )}
+
+      {/* Overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 lg:bg-opacity-40"
+          onClick={toggleSidebar}
+        />
+      )}
 
       {/* Main content area */}
-      <main
-        className={`flex-1 transition-all duration-300 ease-in-out ${
-          isOpen ? "lg:ml-[180px]" : "lg:ml-[60px]"
-        }`}
-      >
-        {/* Top bar visible only on mobile */}
-        <div className="p-3 bg-white shadow flex justify-between items-center lg:hidden">
+      <main className="flex-1 transition-all duration-300 ease-in-out">
+        {/* Top bar (always visible) */}
+        <div className="p-3 bg-white shadow flex justify-between items-center">
           <button onClick={toggleSidebar}>
-            <i className="ri-menu-line text-2xl"></i>
+            {isOpen ? (
+              <i className="ri-close-line text-2xl text-amber-400"></i>
+            ) : (
+              <i className="ri-menu-line text-2xl text-amber-400"></i>
+            )}
           </button>
           <h1 className="font-semibold text-gray-700">Dashboard</h1>
         </div>
@@ -269,8 +234,7 @@ export const Dashboard = () => {
     </div>
   );
 };
-
-
+     
 
 
 
