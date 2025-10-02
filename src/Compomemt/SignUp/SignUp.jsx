@@ -8,18 +8,14 @@ import { auth, db } from "../../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 // Firestore function to write data
 import { doc, setDoc } from "firebase/firestore";
-// Import Supabase client for file storage
 import { supabase } from "../../supabaseClient";
 
 
 export const SignUp = () => {
   // State to toggle between password text/hidden
   const [passwordType, setPasswordType] = useState("password");
-
   const navigate = useNavigate();
-
   const [error, setError] = useState(null);
-
   const [loader, setLoader] = useState(false);
   // State to track upload progress (not actively used in this version but ready)
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -28,9 +24,9 @@ export const SignUp = () => {
 
   // State object to hold all signup form data
   const [signUp, setSignUp] = useState({
-    fullname: "", 
-    email: "",    
-    password: "", 
+    fullname: "",
+    email: "",
+    password: "",
     photo: null,  // Uploaded profile image (file object)
   });
 
@@ -107,9 +103,14 @@ export const SignUp = () => {
         photoURL: publicUrl, // Profile image URL
         createdAt: new Date(), // Save account creation date
       });
-
       console.log("User created successfully ");
+
+
+        // ✅ Save UID in localStorage
+      localStorage.setItem("uid", userCredential.user.uid);
+
       navigate("/login"); // Redirect to login page after signup
+
     } catch (err) {
       // Handle any signup errors
       console.error("Signup error:", err.code, err.message);
@@ -252,15 +253,13 @@ export const SignUp = () => {
           <button
             type="submit"
             disabled={loader} // Disable if loading
-            className={`w-full p-2 rounded font-semibold ${
-              loader ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
-            } text-white`}
+            className={`w-full p-2 rounded font-semibold ${loader ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
+              } text-white`}
           >
             {/* Button text changes depending on loading state */}
             {loader
-              ? `Creating Account... ${
-                  uploadProgress > 0 ? `(${uploadProgress}%)` : ""
-                }`
+              ? `Creating Account... ${uploadProgress > 0 ? `(${uploadProgress}%)` : ""
+              }`
               : "Sign Up"}
           </button>
         </form>

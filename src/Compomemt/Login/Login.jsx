@@ -19,7 +19,10 @@ export const Login = () => {
             await signInWithEmailAndPassword(auth, formInputType.email, formInputType.password);
             // console.log("Login successfully");
             
-            navigate('/dashboard'); // Navigate to dashboard on successful login
+            navigate('/dashboard/home'); // Navigate to dashboard on successful login
+            localStorage.setItem('uid',user.uid)
+
+
         } catch (error) {
             if (error.code === 'auth/network-request-failed') {
                 setErrors("Network error. Please disable ad blockers or try a different browser.");

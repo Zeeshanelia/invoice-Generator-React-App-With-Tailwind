@@ -13,9 +13,9 @@ export const NewInvoice = () => {
   const [quantity, setQuantity] = useState("");
   const [total, setTotal] = useState('');
   const [proDetails, setProDetails] = useState([])
-
-
   const navigate = useNavigate()
+
+
   const savingData = async () => {
     console.log({ to, phone, address, proDetails, total });
 
@@ -28,6 +28,7 @@ export const NewInvoice = () => {
         address: address,
         products: proDetails, //  Save full product list
         total: total,
+        uid:localStorage.getItem('uid') ,
         date: Timestamp.fromDate(new Date())
       });
 

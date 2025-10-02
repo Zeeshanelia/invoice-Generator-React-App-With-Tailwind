@@ -1,7 +1,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { db } from '../../firebase';
-import { getDocs, collection, deleteDoc, doc } from "firebase/firestore";
+import { getDocs, collection, deleteDoc, doc ,query ,where } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
 
@@ -12,8 +12,9 @@ export const InvoicesRecord = () => {
     const navigate = useNavigate();
     const getData = useCallback(async () => {
         try {
+            const q = query(collection(db , 'invoices') ,where('uid' , '==' , localStorage.getItem('uid'))) 
+            const querySnapshot = await getDocs(q);
             setLoading(true);
-            const querySnapshot = await getDocs(collection(db, "invoices"));
             const data = querySnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
@@ -47,12 +48,14 @@ export const InvoicesRecord = () => {
 
     
     return (
-        <div className="md:mt-4 md:ml-12">
+        <div className="md:mt-4 md:ml-14">
             <h2 className="md:text-2xl md:ml-2 font-bold">Invoices Record</h2>
 
-            {loading && <p>Loading invoices...</p>}
+           <div className="py-2 text-center font-bold ">
+             {loading && <p>Loading invoices...</p>}
             {error && <p className="text-red-500">{error}</p>}
             {!loading && invoices.length === 0 && <p>No invoices found.</p>}
+           </div>
 
             {invoices.map(data => (
                 <div

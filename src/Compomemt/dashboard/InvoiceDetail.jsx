@@ -73,11 +73,11 @@ export const InvoiceDetail = () => {
 
         <table className="mt-12 w-full border-collapse">
           <thead>
-            <tr className="border shadow border-black bg-gray-300">
+            <tr className="border shadow border-black bg-gray-400 ">
               <th className="px-4 py-2 text-left">S. No</th>
               <th className="px-4 py-2 text-left">Product</th>
               <th className="px-4 py-2 text-left">Price</th>
-              <th className="px-4 py-2 text-left">Quantity</th>
+              <th className="px-4 py-2 text-left ">Quantity</th>
               <th className="px-4 py-2 text-left">Total</th>
             </tr>
           </thead>
@@ -88,7 +88,7 @@ export const InvoiceDetail = () => {
                   <td className="px-4 py-2">{index + 1}</td>
                   <td className="px-4 py-2">{product.name}</td>
                   <td className="px-4 py-2">{product.price}</td>
-                  <td className="px-4 py-2">{product.quantity}</td>
+                  <td className="px-4  py-2">{product.quantity}</td>
                   <td className="px-4 py-2">
                     {product.price * product.quantity}
                   </td>
@@ -104,10 +104,10 @@ export const InvoiceDetail = () => {
           </tbody>
 
           <tfoot className=" ">
-            <tr className="bg-gray-300 ">
+            <tr className="bg-gray-400 ">
               <td colSpan={5} className="relative p-1 ">
                 <h3 className="ml-2 top-0 font-bold">Grand Total:</h3>
-                <p className="absolute top-0 right-14 font-bold">
+                <p className="absolute top-0 mr-10 right-14 font-bold">
                   {data?.total}
                 </p>
               </td>
@@ -150,8 +150,8 @@ export const InvoiceDetail = () => {
                 <p>📞 +92 300 512 5485</p>
               </div>
               <div>
-                <p>📩 ZeeshanElia@facebook.com</p>
-                <p>📩 ZeeshanElia@instagram.com</p>
+                <p>📩 ZeeshanElia@fb.com</p>
+                <p>📩 ZeeshanElia@ig.com</p>
               </div>
               <div>
                 <p>📍 Your Address</p>

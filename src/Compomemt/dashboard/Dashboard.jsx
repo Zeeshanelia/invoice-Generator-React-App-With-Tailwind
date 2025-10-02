@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useRef } from "react"; 
 import { NavLink, Outlet } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // Importing supabase client to interact with Supabase storage
 import { supabase } from "../../supabaseClient";
 export const Dashboard = () => {
@@ -20,7 +21,6 @@ export const Dashboard = () => {
 
   const [imgUrl, setImgUrl] = useState("");
   const objectUrlRef = useRef(null);
-
   const BUCKET = "profile-images";
   const FOLDER = "profile";
 
@@ -102,8 +102,10 @@ export const Dashboard = () => {
           .toUpperCase()
       : "??";
 
+      const navigate = useNavigate() 
   const logout = () => {
     revokeObjectUrl();
+    navigate('/Login')
     localStorage.removeItem("CompanyN");
     window.location.reload();
   };
@@ -123,7 +125,7 @@ export const Dashboard = () => {
           `}
         >
           {/* Close button */}
-          <div className="flex justify-end p-3 border-b border-gray-800">
+          <div className="flex justify-end  p-1 border-b border-gray-800">
             <button
               onClick={toggleSidebar}
               aria-label="Close sidebar"
@@ -137,7 +139,7 @@ export const Dashboard = () => {
           <div className="flex flex-col items-center mt-6 space-y-2">
             {imgUrl ? (
               <img
-                className="w-16 h-16 lg:w-28 lg:h-28 rounded-full border-2 border-white shadow-md object-cover"
+                className="w-16 h-16 lg:w-28 lg:h-28 rounded-full border-2 border-white  shadow-md object-cover"
                 src={imgUrl}
                 alt="Uploaded"
               />
@@ -195,7 +197,7 @@ export const Dashboard = () => {
           <div className="mt-auto px-2 lg:px-3 pb-6">
             <button
               onClick={logout}
-              className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 py-2 rounded transition"
+              className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 py-2 mt-1 rounded transition"
             >
               <i className="ri-logout-box-r-line"></i>
               <span>Logout</span>
