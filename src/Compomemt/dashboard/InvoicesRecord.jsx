@@ -59,13 +59,16 @@ export const InvoicesRecord = () => {
 
             {invoices.map(data => (
                 <div
-                    className="md:flex md:text-center md:m-4 p-2 bg-green-200 md:gap-4 md:items-center justify-between shadow-lg rounded"
+                    className="md:flex md:text-center md:m-4 p-2 bg-purple-200 md:gap-4 md:items-center justify-between shadow-xl rounded"
                     key={data.id}
                 >
                     <p>{data.to}</p>
-                    <p>{data.product}</p>
-                    <p>{data.date?.seconds ? new Date(data.date.seconds * 1000).toLocaleDateString() : 'No Date'}</p>
-                    <p>{data.total}</p>
+                    {/* <p>{data?.products?.[0]?.name}</p> */}
+                    <p>{data?.products?.map(p => p.name).join(", ")}</p>
+
+
+                    <p> {data.date?.seconds ? new Date(data.date.seconds * 1000).toLocaleDateString() : 'No Date' } </p>
+                    <p>Total Rs : {data.total}</p>
 
                     <div className="flex gap-2">
                         <button

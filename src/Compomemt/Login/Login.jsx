@@ -53,8 +53,8 @@ export const Login = () => {
 
     return (
 
-        <div className="grid     md:grid-cols-2  md:overflow-hidden">
-            <img src="/img/Login2.jpg" className="w-full md:h-auto object-cover md:w-3/4 mx-auto " alt="Login Image" />
+        <div className="grid md:grid-cols-2  md:overflow-hidden">
+            <img src="/img/Login2.jpg" className="w-[19rem] md:w-[30rem]   ml-10 " alt="Login Image" />
 
 
             <div className="w-full flex flex-col  p-8 md:p-16  justify-center   ">

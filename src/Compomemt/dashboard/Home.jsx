@@ -8,17 +8,16 @@ export const Home = () => {
   const chartRef = useRef(null);       // ref to the <canvas>
   const chartInstance = useRef(null);  // store chart instance
   const [invoices, setInvoices] = useState([]); //all invoices from Firestore
-  const [totalOverAll, setTotalOverAll] = useState(0);  // total of ALL invoices
-  const [monthlyCollection, setMonthlyCollection] = useState(0); // total for current month
+  const [totalOverAll, setTotalOverAll] = useState(0);  
+  const [monthlyCollection, setMonthlyCollection] = useState(0); 
 
   // Company data from localStorage (example: used for initials, etc.)
   const companyData = JSON.parse(localStorage.getItem("CompanyN") || "{}");
   const initials = (name) =>
     name ? name.split(" ").map((n) => n[0]).join("").toUpperCase() : "??";
 
-  /**
-   * Fetch all invoices from Firestore
-   */
+  
+  //  Fetch all invoices from Firestore
   const getData = useCallback(async () => {
     try {
       // Query Firestore: only get invoices belonging to the current user (uid from localStorage)
@@ -38,7 +37,7 @@ export const Home = () => {
 
       // Save invoices to state
       setInvoices(data);
-     
+
       // Calculate totals
       getAllTotal(data);
       getMonthlyTotal(data);
@@ -176,35 +175,40 @@ export const Home = () => {
           {/* Chart Section */}
           <NavLink
             to="/new-invoice"
-            className="bg-gray-200 hover:bg-gray-300 text-white py-1 rounded-lg shadow md:w-[36rem] md:h-80 "
+            className="bg-gray-200 hover:bg-gray-300 text-white py-1 rounded-lg shadow-lg md:w-[31rem] md:h-80 "
           >
             <canvas ref={chartRef} id="myChart" />
           </NavLink>
 
+
+
+
+
+
+
+
           {/* Placeholder for Recent Invoices (make dynamic later) */}
           <NavLink
-            className="bg-blue-500 hover:bg-blue-600 text-white  md:ml-[13rem] md:w-42 md:h-54 rounded-lg shadow text-center "
+            className="bg-blue-500 hover:bg-blue-600 text-white  md:ml-[7.3rem] md:w-64 md:h-54 rounded-lg shadow text-center  shadow-xl"
           >
             <h1 className="text-center text-small rounded shadow-xl bg-black text-white">
               Recent Invoice List
-            </h1>
+            </h1> {
+              invoices.slice(0, 6).map((data) => (
+                <div key={data.id} className="py-4 md:flex text-red-100 justify-center gap-6">
+                  <p>{data.to}</p>
+                  <p>
+                    {data.date?.seconds
+                      ? new Date(data.date.seconds * 1000).toLocaleDateString()
+                      : "No Date"}
+                  </p>
+                </div>
+              ))
+            }
 
 
-           {
-  invoices.slice(0, 6).map((data) => (
-    <div key={data.id} className="py-4 flex justify-center gap-6">
-      <p>{data.to}</p>
-      <p>
-        {data.date?.seconds
-          ? new Date(data.date.seconds * 1000).toLocaleDateString()
-          : "No Date"}
-      </p>
-    </div>
-  ))
-}
+            <footer className="px-4 text-black mt-24 font-bold"> Good to see you </footer>
 
-            
-            <footer className="px-4"> Good to see you </footer>
           </NavLink>
         </div>
       </div>

@@ -1,12 +1,9 @@
-
 import { useRef, useState } from "react";
-
 import { Link, useNavigate } from "react-router-dom";
 // Import Firebase Authentication and Firestore instances
 import { auth, db } from "../../firebase";
 // Firebase functions: create user and update profile
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-// Firestore function to write data
 import { doc, setDoc } from "firebase/firestore";
 import { supabase } from "../../supabaseClient";
 
@@ -17,7 +14,6 @@ export const SignUp = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [loader, setLoader] = useState(false);
-  // State to track upload progress (not actively used in this version but ready)
   const [uploadProgress, setUploadProgress] = useState(0);
   // Ref for hidden file input (used to trigger file picker from custom button)
   const fileInputRef = useRef(null);
@@ -98,15 +94,15 @@ export const SignUp = () => {
       // Step 5: Save user info in Firestore database
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,       // User unique ID
-        fullname,            // Full name
-        email,               // Email
+        fullname,
+        email,
         photoURL: publicUrl, // Profile image URL
         createdAt: new Date(), // Save account creation date
       });
       console.log("User created successfully ");
 
 
-        // ✅ Save UID in localStorage
+      //  Save UID in localStorage
       localStorage.setItem("uid", userCredential.user.uid);
 
       navigate("/login"); // Redirect to login page after signup
@@ -134,25 +130,28 @@ export const SignUp = () => {
     }
   };
 
-  // JSX (UI) returned by component
+
   return (
-    <div className="grid md:grid-cols-2 gap-2 justify-center items-center">
+    <div className="grid md:grid-cols-2    items-center">
+
       {/* Left side signup illustration image */}
+
       <img
         src="/img/signup.webp"
-        className="w-full mt-0 md:h-[428px] max-w-md mx-auto"
+        className=" md:h-[380px] md:ml-10 p-4 "
         alt="Sign Up"
       />
 
       {/* Right side form */}
-      <div className="flex flex-col sm:items-center mt-10">
-        <h1 className="font-bold text-2xl md:text-2xl">New User Register</h1>
-        <p className="text-gray-400 text-center md:text-left">
+
+      <div className="flex flex-col sm:items-center p-12  ">
+        <h1 className="font-bold text-xl md:text-2xl">New User Register</h1>
+        <p className="text-gray-400  md:text-left">
           Create Id To Start your Invoice Generator
         </p>
 
         {/* Signup form */}
-        <form className="mt-4 space-y-4" onSubmit={submitHandler}>
+        <form className="mt-8 space-y-4" onSubmit={submitHandler}>
           {/* Full Name Input */}
           <div className="flex flex-col">
             <label className="font-semibold mb-1">Full Name</label>
@@ -257,12 +256,22 @@ export const SignUp = () => {
               } text-white`}
           >
             {/* Button text changes depending on loading state */}
-            {loader
-              ? `Creating Account... ${uploadProgress > 0 ? `(${uploadProgress}%)` : ""
-              }`
-              : "Sign Up"}
+            {loader ? (
+              <>
+                <i className="fas fa-sync fa-spin me-2"></i>
+                {uploadProgress > 0 ? `Uploading (${uploadProgress}%)` : "Please wait..."}
+              </>
+            ) : (
+              "Sign Up"
+            )}
           </button>
+
+
+          <span className="mt-4">  </span>
         </form>
+
+
+
 
         {/* Login link */}
         <span className="mt-4">
